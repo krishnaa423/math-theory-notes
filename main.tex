@@ -1,0 +1,91 @@
+\documentclass{book}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\title{Mathematics Notes for Scientific Computing}
+\author{Srikrishnaa Vadivel}
+\date{}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\chapter{Algebra in Prefix Notation}
+Write operations in prefix form: $(\cdot\ a\ b)$ instead of $a\cdot b$ and
+$(+\ a\ b)$ instead of $a+b$. A group is $(G,\cdot,e,^{-1})$ with axioms
+\[
+  (=\ (\cdot\ e\ a)\ a),\quad
+  (=\ (\cdot\ a\ e)\ a),\quad
+  (=\ (\cdot\ a\ (a^{-1}))\ e),\quad
+  (=\ (\cdot\ (\cdot\ a\ b)\ c)\ (\cdot\ a\ (\cdot\ b\ c))).
+\]
+A ring has an abelian group $(R,+,0,-)$, a monoid $(R,\cdot,1)$, and
+distributivity:
+\[
+  (=\ (\cdot\ a\ (+\ b\ c))\ (+\ (\cdot\ a\ b)\ (\cdot\ a\ c))).
+\]
+A field is a commutative ring where every nonzero element has a multiplicative
+inverse. A vector space over $F$ has $+:V^2\to V$ and scalar multiplication
+$F\times V\to V$ satisfying linearity. An algebra adds a bilinear product
+$V\times V\to V$. A lattice has $\wedge,\vee$ with commutativity,
+associativity, absorption, and idempotence.
+
+\chapter{Analysis and PDE Notation}
+For a field $u:\Omega\subset\R^d\to\R^m$, use coordinate derivatives
+$\partial_i u_\alpha=\frac{\partial u_\alpha}{\partial x_i}$. A conservation
+law is
+\[
+  \partial_t u_\alpha+\partial_i f_{\alpha i}(u,x,t)=s_\alpha.
+\]
+Poisson's equation and weak form are
+\[
+  -\partial_i(k\partial_i u)=f,\qquad
+  \int_\Omega k\,\partial_i u\,\partial_i v\,dx=\int_\Omega f v\,dx.
+\]
+The heat equation is $\partial_t u-\partial_i(\kappa\partial_i u)=f$. Linear
+elasticity uses strain $\epsilon_{ij}(u)=\frac12(\partial_i u_j+\partial_j u_i)$
+and stress $\sigma_{ij}=C_{ijkl}\epsilon_{kl}$ with equilibrium
+$-\partial_i\sigma_{ij}=b_j$.
+
+\chapter{Geometry}
+A smooth manifold $M$ is locally modeled by charts
+$\phi:U\subset M\to \R^n$. A vector field is a derivation on smooth functions.
+A connection $\nabla$ differentiates vector fields with
+\[
+  \nabla_{\partial_i}\partial_j=\Gamma^k_{ij}\partial_k.
+\]
+Curvature measures non-commuting covariant derivatives:
+\[
+  R(\partial_i,\partial_j)\partial_k=R^\ell{}_{kij}\partial_\ell,\quad
+  R^\ell{}_{kij}=\partial_i\Gamma^\ell_{jk}-\partial_j\Gamma^\ell_{ik}
+  +\Gamma^\ell_{im}\Gamma^m_{jk}-\Gamma^\ell_{jm}\Gamma^m_{ik}.
+\]
+For a metric $g_{ij}$, the Levi-Civita connection is torsion-free and metric
+compatible:
+\[
+  \Gamma^k_{ij}=\frac12 g^{k\ell}(\partial_i g_{j\ell}+\partial_j g_{i\ell}
+  -\partial_\ell g_{ij}).
+\]
+
+\chapter{Probability}
+A probability space is $(\Omega,\mathcal{F},\Prob)$ with countably additive
+measure $\Prob(\Omega)=1$. A random variable is a measurable map
+$X:\Omega\to S$. Expectation is $\E[X]=\int_\Omega X(\omega)d\Prob(\omega)$.
+A stochastic process is a family $X_t$. An Itô diffusion satisfies
+\[
+  dX_t^i=b_i(X_t,t)dt+\sigma_{ij}(X_t,t)dW_t^j.
+\]
+Itô's lemma for $f(X_t,t)$ is
+\[
+  df=\left(\partial_t f+b_i\partial_i f+\frac12 a_{ij}\partial_i\partial_j f\right)dt
+  +\partial_i f\,\sigma_{ij}dW_t^j,\quad a=\sigma\sigma^T.
+\]
+The Fokker--Planck PDE for density $p(x,t)$ is
+\[
+  \partial_t p=-\partial_i(b_i p)+\frac12\partial_i\partial_j(a_{ij}p).
+\]
+
+\end{document}
