@@ -1,91 +1,599 @@
-\documentclass{book}
-\usepackage{amsmath,amssymb,amsthm}
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
 \usepackage{hyperref}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
-\title{Mathematics Notes for Scientific Computing}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  citecolor=blue
+}
+
+\title{Mathematical Theory Compendium}
 \author{Srikrishnaa Vadivel}
 \date{}
+
 \newcommand{\R}{\mathbb{R}}
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\g}{\mathfrak{g}}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+
 \begin{document}
 \maketitle
 \tableofcontents
 
-\chapter{Algebra in Prefix Notation}
-Write operations in prefix form: $(\cdot\ a\ b)$ instead of $a\cdot b$ and
-$(+\ a\ b)$ instead of $a+b$. A group is $(G,\cdot,e,^{-1})$ with axioms
-\[
-  (=\ (\cdot\ e\ a)\ a),\quad
-  (=\ (\cdot\ a\ e)\ a),\quad
-  (=\ (\cdot\ a\ (a^{-1}))\ e),\quad
-  (=\ (\cdot\ (\cdot\ a\ b)\ c)\ (\cdot\ a\ (\cdot\ b\ c))).
-\]
-A ring has an abelian group $(R,+,0,-)$, a monoid $(R,\cdot,1)$, and
-distributivity:
-\[
-  (=\ (\cdot\ a\ (+\ b\ c))\ (+\ (\cdot\ a\ b)\ (\cdot\ a\ c))).
-\]
-A field is a commutative ring where every nonzero element has a multiplicative
-inverse. A vector space over $F$ has $+:V^2\to V$ and scalar multiplication
-$F\times V\to V$ satisfying linearity. An algebra adds a bilinear product
-$V\times V\to V$. A lattice has $\wedge,\vee$ with commutativity,
-associativity, absorption, and idempotence.
+\section{Overview}
 
-\chapter{Analysis and PDE Notation}
-For a field $u:\Omega\subset\R^d\to\R^m$, use coordinate derivatives
-$\partial_i u_\alpha=\frac{\partial u_\alpha}{\partial x_i}$. A conservation
-law is
-\[
-  \partial_t u_\alpha+\partial_i f_{\alpha i}(u,x,t)=s_\alpha.
-\]
-Poisson's equation and weak form are
-\[
-  -\partial_i(k\partial_i u)=f,\qquad
-  \int_\Omega k\,\partial_i u\,\partial_i v\,dx=\int_\Omega f v\,dx.
-\]
-The heat equation is $\partial_t u-\partial_i(\kappa\partial_i u)=f$. Linear
-elasticity uses strain $\epsilon_{ij}(u)=\frac12(\partial_i u_j+\partial_j u_i)$
-and stress $\sigma_{ij}=C_{ijkl}\epsilon_{kl}$ with equilibrium
-$-\partial_i\sigma_{ij}=b_j$.
+This note is an attempt to write broad areas of mathematics through compact and
+reusable equations. The emphasis is not on encyclopedic completeness. The goal
+is to show a style of mathematical organization: define the objects cleanly,
+state the structural laws precisely, and then express higher theories as
+controlled extensions of the same notation.
 
-\chapter{Geometry}
-A smooth manifold $M$ is locally modeled by charts
-$\phi:U\subset M\to \R^n$. A vector field is a derivation on smooth functions.
-A connection $\nabla$ differentiates vector fields with
+The three main threads here are:
+\begin{itemize}
+  \item algebra as the study of operations and the laws they satisfy,
+  \item analysis as the study of functions, variation, and differential
+  equations,
+  \item geometry as the study of smooth spaces, tensors, and curvature.
+\end{itemize}
+
+\section{Algebra}
+
+\subsection{Terms and Operations}
+
+Let
 \[
-  \nabla_{\partial_i}\partial_j=\Gamma^k_{ij}\partial_k.
+  x_i \in X
 \]
-Curvature measures non-commuting covariant derivatives:
+be symbols in a set \(X\). Let
 \[
-  R(\partial_i,\partial_j)\partial_k=R^\ell{}_{kij}\partial_\ell,\quad
-  R^\ell{}_{kij}=\partial_i\Gamma^\ell_{jk}-\partial_j\Gamma^\ell_{ik}
-  +\Gamma^\ell_{im}\Gamma^m_{jk}-\Gamma^\ell_{jm}\Gamma^m_{ik}.
+  f_i : X^{n_i} \to X
 \]
-For a metric $g_{ij}$, the Levi-Civita connection is torsion-free and metric
-compatible:
+be an operation of arity \(n_i\). In prefix notation,
 \[
-  \Gamma^k_{ij}=\frac12 g^{k\ell}(\partial_i g_{j\ell}+\partial_j g_{i\ell}
-  -\partial_\ell g_{ij}).
+  f_i x_1 \cdots x_{n_i} = f_i(x_1,\dots,x_{n_i}).
 \]
 
-\chapter{Probability}
-A probability space is $(\Omega,\mathcal{F},\Prob)$ with countably additive
-measure $\Prob(\Omega)=1$. A random variable is a measurable map
-$X:\Omega\to S$. Expectation is $\E[X]=\int_\Omega X(\omega)d\Prob(\omega)$.
-A stochastic process is a family $X_t$. An Itô diffusion satisfies
+This viewpoint is useful because it makes the algebraic laws look like
+equational templates. A structure is then determined by the operations it
+admits together with the identities they satisfy.
+
+\subsection{Fundamental Algebraic Laws}
+
+\paragraph{Closure.}
 \[
-  dX_t^i=b_i(X_t,t)dt+\sigma_{ij}(X_t,t)dW_t^j.
+  f(x,y) \in X.
 \]
-Itô's lemma for $f(X_t,t)$ is
+
+\paragraph{Commutativity.}
 \[
-  df=\left(\partial_t f+b_i\partial_i f+\frac12 a_{ij}\partial_i\partial_j f\right)dt
-  +\partial_i f\,\sigma_{ij}dW_t^j,\quad a=\sigma\sigma^T.
+  f(x,y) = f(y,x).
 \]
-The Fokker--Planck PDE for density $p(x,t)$ is
+
+\paragraph{Associativity.}
 \[
-  \partial_t p=-\partial_i(b_i p)+\frac12\partial_i\partial_j(a_{ij}p).
+  f(f(x,y),z) = f(x,f(y,z)).
 \]
+
+\paragraph{Identity.}
+There exists \(e \in X\) such that
+\[
+  f(e,x) = x,
+  \qquad
+  f(x,e) = x.
+\]
+
+\paragraph{Inverse.}
+For every \(x \in X\), there exists \(x^{-1}\) such that
+\[
+  f(x,x^{-1}) = e.
+\]
+
+\paragraph{Idempotence.}
+\[
+  f(x,x) = x.
+\]
+
+\paragraph{Absorption.}
+For two operations \(f\) and \(g\),
+\[
+  f(x,g(x,y)) = x.
+\]
+
+\paragraph{Distributivity.}
+For two operations \(f\) and \(g\),
+\[
+  f(x,g(y,z)) = g(f(x,y),f(x,z)).
+\]
+
+\subsection{Basic Algebraic Structures}
+
+\paragraph{Magma.}
+A magma is a set \(X\) equipped with one binary operation
+\[
+  f : X \times X \to X.
+\]
+
+\paragraph{Semigroup.}
+A semigroup is a magma satisfying associativity.
+
+\paragraph{Monoid.}
+A monoid is a semigroup with an identity element.
+
+\paragraph{Group.}
+A group is a monoid in which every element has an inverse.
+
+\paragraph{Abelian group.}
+An Abelian group is a group that is also commutative.
+
+These structures form a natural ladder: each new notion is obtained by adding
+one more law to the previous one.
+
+\subsection{Rings and Fields}
+
+A ring \(R\) has two operations \(+\) and \(\cdot\) such that
+\[
+  (R,+)
+\]
+is an Abelian group,
+\[
+  (R,\cdot)
+\]
+is a monoid, and multiplication distributes over addition:
+\[
+  a(b+c) = ab + ac,
+  \qquad
+  (a+b)c = ac + bc.
+\]
+
+A field \(\F\) is a commutative ring for which
+\[
+  (\F \setminus \{0\}, \cdot)
+\]
+is an Abelian group. In practice, the field condition is what allows division by
+nonzero scalars and therefore makes linear theory behave cleanly.
+
+\subsection{Modules and Vector Spaces}
+
+Let \(R\) be a ring and \(M\) an Abelian group. A module structure is a scalar
+multiplication
+\[
+  R \times M \to M,
+  \qquad
+  (r,v) \mapsto rv,
+\]
+satisfying
+\[
+  r(u+v) = ru + rv,
+\]
+\[
+  (r+s)v = rv + sv,
+\]
+\[
+  (rs)v = r(sv).
+\]
+
+When the base ring is a field \(\F\), the module is a vector space. This is the
+point where algebra becomes linear algebra: vector addition and scalar
+multiplication are governed by the same distributive pattern, but now over a
+field rather than an arbitrary ring.
+
+\subsection{Associative and Lie Algebras}
+
+An associative algebra over a field \(\F\) is a vector space \(A\) equipped with
+a bilinear multiplication
+\[
+  A \times A \to A
+\]
+such that
+\[
+  (xy)z = x(yz).
+\]
+
+A Lie algebra is a vector space \(\g\) with a bilinear bracket
+\[
+  [-,-] : \g \times \g \to \g
+\]
+satisfying
+\[
+  [x,y] = -[y,x],
+\]
+and the Jacobi identity
+\[
+  [x,[y,z]] + [y,[z,x]] + [z,[x,y]] = 0.
+\]
+
+The contrast is important: associative algebras encode composition-like
+products, while Lie algebras isolate infinitesimal commutation structure.
+
+\subsection{Constructed Algebras}
+
+\paragraph{Tensor algebra.}
+For a vector space \(V\),
+\[
+  T(V) = \bigoplus_{k=0}^{\infty} V^{\otimes k}.
+\]
+
+\paragraph{Exterior algebra.}
+The exterior algebra imposes antisymmetry through the relation
+\[
+  v \wedge v = 0.
+\]
+
+\paragraph{Clifford algebra.}
+For a quadratic form \(g\),
+\[
+  uv + vu = 2g(u,v).
+\]
+
+These constructions are useful because they move from a bare vector space to
+larger algebras that remember multilinear, antisymmetric, and metric structure.
+
+\subsection{Normed and Involutive Algebras}
+
+A Banach algebra is an algebra \(A\) with a norm \(\|\cdot\|\) such that \(A\)
+is complete and
+\[
+  \|xy\| \le \|x\| \|y\|.
+\]
+
+A \(C^*\)-algebra is a Banach algebra equipped with an involution
+\[
+  * : A \to A
+\]
+satisfying
+\[
+  (ab)^* = b^* a^*,
+\]
+\[
+  (a^*)^* = a,
+\]
+\[
+  \|a^* a\| = \|a\|^2.
+\]
+
+\section{Analysis}
+
+\subsection{Functions and Composition}
+
+A function is a map
+\[
+  f : X \to Y.
+\]
+Composition is defined by
+\[
+  (f \circ g)(x) = f(g(x)).
+\]
+
+The main point is that analysis starts with maps, but quickly moves to
+structured maps: differentiable maps, integral operators, variational
+functionals, and solution operators for differential equations.
+
+\subsection{Multi-Index Notation}
+
+Let
+\[
+  J = (j_1,\dots,j_n) \in \N^n,
+  \qquad
+  |J| = \sum_{i=1}^n j_i.
+\]
+For a sufficiently smooth function \(u\),
+\[
+  D_J u =
+  \frac{\partial^{|J|} u}
+  {\partial x_1^{j_1} \cdots \partial x_n^{j_n}}.
+\]
+
+This notation compresses higher derivatives into a form that scales well when
+moving from ordinary calculus to PDEs and variational systems.
+
+\subsection{Jets and Total Derivatives}
+
+Let \(u^\alpha(x)\) be unknown fields. The associated jet coordinates are
+\[
+  (x^i, u^\alpha, u^\alpha_J).
+\]
+
+The total derivative in the \(x^i\)-direction is
+\[
+  D_i
+  =
+  \frac{\partial}{\partial x^i}
+  +
+  \sum_J
+  u^\alpha_{J,i}
+  \frac{\partial}{\partial u^\alpha_J}.
+\]
+
+This is the right derivative when the variables include not only the fields but
+also all of their derivatives.
+
+\subsection{Integration and Functionals}
+
+For a domain \(\Omega \subset \R^n\),
+\[
+  \int_\Omega f(x)\,\dd x
+\]
+is the integral of a scalar density over \(\Omega\).
+
+A variational functional has the form
+\[
+  \mathcal{F}[u]
+  =
+  \int_\Omega
+  L(x,u,u_J)\,\dd x,
+\]
+where \(L\) is the Lagrangian density. This turns a field \(u\) into a scalar
+quantity and is the basic setup behind the calculus of variations.
+
+\subsection{Euler--Lagrange Equation}
+
+The stationarity condition for \(\mathcal{F}[u]\) is
+\[
+  \sum_J
+  (-D)_J
+  \frac{\partial L}{\partial u_J}
+  = 0.
+\]
+
+This equation is one of the central bridges between analysis and physics: it
+converts an extremization principle into a differential equation.
+
+\subsection{Differential Equations and Boundary Conditions}
+
+A general nonlinear differential equation can be written as
+\[
+  F(x,u,u_J) = 0.
+\]
+
+Standard boundary conditions include:
+
+\paragraph{Dirichlet.}
+\[
+  u = g.
+\]
+
+\paragraph{Neumann.}
+\[
+  \pd{u}{n} = g.
+\]
+
+\paragraph{Robin.}
+\[
+  au + b \pd{u}{n} = g.
+\]
+
+\subsection{Weak Forms}
+
+Instead of solving a differential equation pointwise, one often seeks
+\[
+  u \in V
+\]
+such that
+\[
+  a(u,v) = \ell(v)
+  \qquad
+  \text{for all } v \in V.
+\]
+
+This formulation is central in finite elements, functional analysis, and modern
+PDE theory because it weakens differentiability requirements while preserving
+the core operator structure.
+
+\subsection{Banach and Hilbert Spaces}
+
+A Banach space is a complete normed vector space with norm
+\[
+  \|u\|.
+\]
+
+A Hilbert space is a complete inner-product space with inner product
+\[
+  \langle u,v \rangle.
+\]
+
+The extra inner-product structure in Hilbert spaces gives orthogonality,
+projection, and spectral theory in a particularly clean form.
+
+\subsection{Operators and Spectral Problems}
+
+A linear operator is a map
+\[
+  L : V \to W.
+\]
+
+The corresponding eigenvalue problem is
+\[
+  Lu = \lambda u.
+\]
+
+This equation organizes much of analysis around invariant modes, frequencies,
+and stability behavior.
+
+\section{Geometry}
+
+\subsection{Smooth Manifolds}
+
+A smooth manifold is a topological space \(M\) equipped with an atlas
+\[
+  \{(U_i,\phi_i)\},
+\]
+where
+\[
+  \phi_i : U_i \to \R^n
+\]
+are compatible coordinate charts.
+
+The point is that geometry is built by moving between local Euclidean
+coordinates and globally defined objects that do not depend on a particular
+chart.
+
+\subsection{Tangent, Cotangent, and Tensor Spaces}
+
+At each point \(p \in M\), the tangent space is
+\[
+  T_p M,
+\]
+and the cotangent space is
+\[
+  T_p^* M.
+\]
+
+From these, one builds tensor bundles
+\[
+  T^r_s M.
+\]
+
+These are the natural homes for vector fields, covectors, metrics, curvature,
+and all other multilinear geometric quantities.
+
+\subsection{Differential Forms and Exterior Calculus}
+
+A differential \(k\)-form is an element
+\[
+  \omega \in \Omega^k(M).
+\]
+
+The exterior derivative is
+\[
+  d : \Omega^k(M) \to \Omega^{k+1}(M),
+  \qquad
+  d^2 = 0.
+\]
+
+The exterior product is
+\[
+  \omega \wedge \eta.
+\]
+
+This package of ideas turns geometry into a calculus of antisymmetric tensors
+that behaves well under coordinate change.
+
+\subsection{Metrics and Connections}
+
+A metric is a symmetric \((0,2)\)-tensor
+\[
+  g = g_{ij}\,\dd x^i \otimes \dd x^j.
+\]
+
+A connection differentiates tensor fields. On vector fields, one writes
+\[
+  \nabla_X Y,
+\]
+or locally
+\[
+  \nabla_{\partial_i} \partial_j
+  =
+  \Gamma^k_{ij}\,\partial_k.
+\]
+
+Connections encode how vectors are transported and compared across nearby
+points of a manifold.
+
+\subsection{Curvature}
+
+The curvature operator is
+\[
+  R(X,Y)Z.
+\]
+
+In coordinates, its components are written
+\[
+  R^i{}_{jkl}.
+\]
+
+The Ricci tensor is obtained by contraction:
+\[
+  R_{ij}.
+\]
+
+The scalar curvature is a second contraction:
+\[
+  R = g^{ij} R_{ij}.
+\]
+
+Together these quantities measure how far the geometry is from being flat.
+
+\subsection{Geodesics}
+
+A geodesic \(\gamma(t)\) satisfies
+\[
+  \frac{D \dot{\gamma}}{\dd t} = 0.
+\]
+
+This is the intrinsic version of straight-line motion: the acceleration
+vanishes with respect to the connection, not necessarily in ambient Euclidean
+coordinates.
+
+\subsection{Bundles and Gauge Geometry}
+
+A fiber bundle has the form
+\[
+  F \hookrightarrow E \to M.
+\]
+
+A principal \(G\)-bundle is written
+\[
+  G \hookrightarrow P \to M.
+\]
+
+A connection one-form is denoted by
+\[
+  A.
+\]
+
+Its curvature two-form is
+\[
+  F = \dd A + A \wedge A.
+\]
+
+The covariant exterior derivative is
+\[
+  D = \dd + A.
+\]
+
+This notation is the natural language for gauge theory, differential geometry,
+and many geometric formulations of physics.
+
+\subsection{Hodge Theory and Integral Identities}
+
+The Hodge star operator is
+\[
+  * : \Omega^k(M) \to \Omega^{n-k}(M).
+\]
+
+The Laplace--Beltrami operator is
+\[
+  \Delta = \dd \delta + \delta \dd.
+\]
+
+Stokes' theorem closes the circle between local differentiation and global
+integration:
+\[
+  \int_M \dd \omega = \int_{\partial M} \omega.
+\]
+
+\section{Closing View}
+
+One way to read the document is as a progression in which each subject refines
+the last:
+\begin{itemize}
+  \item algebra studies operations and the identities they satisfy,
+  \item analysis studies functions, operators, and variational equations built
+  from those operations,
+  \item geometry studies spaces on which those operators and equations become
+  coordinate-invariant.
+\end{itemize}
+
+The long-term aim is not merely to collect formulas, but to express a style of
+thinking: start from the primitive objects, choose notation that scales, and let
+the equations reveal the structure.
 
 \end{document}
